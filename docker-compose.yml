@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  postgress:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: caaz
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: my_store
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: my_store
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: mysql
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql_data:/var/lib/mysql
