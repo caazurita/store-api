@@ -17,13 +17,13 @@ class OrdersService {
   async findOne(id) {
     const data = await models.Order.findByPk(id, {
       include: [
-      {
-        association: 'customer',
-        include: ['user']
-      },
-      {
-        association: 'items'
-      }
+        {
+          association: 'customer',
+          include: ['user']
+        },
+        {
+          association: 'items'
+        }
       ]
     });
     if (!data) {
@@ -32,7 +32,37 @@ class OrdersService {
     return data;
   }
 
-  async create(data) {
+  async findByCustomer(id) {
+    const data = await models.Order.findAll({
+      where: {
+        '$customer.user.id$': id
+      },
+      include: [
+        {
+          association: 'customer',
+          include: ['user']
+        }
+      ]
+    })
+
+    return data
+  }
+
+  async create(userId, data) {
+    const customer = await models.Customer.findOne({
+      where: {
+        userId
+      }
+    })
+    if (!customer) {
+      throw boom.notFound('Customer not found');
+    }
+
+    data = {
+      ...data,
+      customerId: customer.id
+    }
+
     const newOrder = await models.Order.create(data);
     return newOrder;
   }

@@ -6,11 +6,13 @@ const name = Joi.string().min(3).max(15);
 const email = Joi.string().email();
 const password = Joi.string().min(6).max(15);
 const image = Joi.string().uri();
+const role = Joi.string();
 
 const newUserSchema = Joi.object({
   name: name.required(),
   email: email.required(),
-  password: password.required()
+  password: password.required(),
+  role : role.required()
 })
 
 

@@ -3,6 +3,7 @@ const express = require("express");
 const OrdersService = require('../services/orders.service');
 const { getOrderSchema, newOrderSchema, addItemSchema } = require('../schema/orders.schema');
 const { updateCategorySchema } = require('../schema/categories.schema');
+const passport = require('passport');
 
 
 const router = express.Router();
@@ -38,15 +39,17 @@ router.get('/:id',
 );
 
 router.post('/',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(newOrderSchema, 'body'),
   async (req, res, next) => {
     try {
+      const user = req.user;
       const body = req.body;
-      const newCustomer = await service.create(body);
+      const data = await service.create(user.sub, body);
 
       res.status(201).json({
         "success": true,
-        "data": newCustomer
+        "data": data
       });
     } catch (error) {
       //ejecutar los middlewares con la funcion next()
